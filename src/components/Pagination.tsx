@@ -16,7 +16,7 @@ interface IPagination {
 interface IDropdownOptionType {
   id: string;
   label: string;
-  value: string;
+  value: number;
 }
 
 const menuOptions: IDropdownOptionType[] = [
@@ -104,7 +104,13 @@ const Pagination: React.FC<IPagination> = (props) => {
               <select defaultValue={10} onChange={onPageSizeChange}>
                 {
                   menuOptions.map((option: IDropdownOptionType) => (
-                    <option value={option.value} selected={option.value === String(pageSize)}>{option.label}</option>
+                    <option
+                      key={option.value}
+                      value={option.value}
+                      selected={option.value === pageSize}
+                    >
+                      {option.label}
+                    </option>
                   ))
                 }
               </select>
@@ -122,17 +128,20 @@ const Pagination: React.FC<IPagination> = (props) => {
       <div className="flex items-center">
         <span className="p-2 flex items-center rotate-180 cursor-pointer" onClick={onArrowClick('-')}><CaretRightSvg /></span>
         {
-          renderPageNumbersWithEllipses().map((page: number | string) => {
+          renderPageNumbersWithEllipses().map((page: number | string, index: number) => {
             if (page === '...') {
               return (
-                <div className="p-2">
+                <div key={index} className="p-2">
                   <span>{page}</span>
                 </div>
               );
             }
             return (
-              <div className={`p-2 cursor-pointer rounded ${Number(page) === currentPage ? 'bg-green-200' : ''}`}
-                   onClick={() => onPageChange(Number(page))}>
+              <div
+                key={index}
+                className={`p-2 cursor-pointer rounded ${Number(page) === currentPage ? 'bg-green-200' : ''}`}
+                onClick={() => onPageChange(Number(page))}
+              >
                 <span>{page}</span>
               </div>
             );

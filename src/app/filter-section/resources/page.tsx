@@ -20,11 +20,14 @@ import {
 import { getSearchedAndFilteredData, getPaginatedData } from '@/utils/helperMethods';
 import { getResources } from '@/store/redux/resources/resourceActions';
 import Pagination from '@/components/Pagination';
+import { IRootState } from '@/store/redux';
+import { AppDispatch } from '@/store';
+import { NextPage } from 'next';
 
-export default function Application() {
+const Resources: NextPage = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const {
     resourceList,
     resources,
@@ -33,7 +36,8 @@ export default function Application() {
     page,
     limit,
     tableHeader
-  } = useSelector((state) => state.resources);
+  } = useSelector((state: IRootState) => state.resources);
+
   const [search, setSearch] = useState<string>('');
   const [filteredData, setFilteredData] = useState<IRawResponse[]>([]);
   const [tableList, setTableList] = useState<IRawResponse[]>([]);
@@ -41,23 +45,27 @@ export default function Application() {
   const debouncedSearch = debounce(async (search: string) => {
     dispatch(onSearch(search));
   }, 1000);
+
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     debouncedSearch(e.target.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelectResource = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(handleChangeResource(e.target.value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if ((!resources || !resources.hasOwnProperty(selectResource)) && selectResource) {
+      // @ts-ignore
       dispatch(getResources({ name: selectResource }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectResource]);
 
   useEffect(() => {
-
     (async () => {
       const filteredData = getSearchedAndFilteredData({
         data: resources[selectResource] ?? [],
@@ -69,18 +77,21 @@ export default function Application() {
       setFilteredData(filteredData);
       onPageChange(1);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resources, searchValue, selectResource]);
 
   useEffect(() => {
     const data = getPaginatedData(filteredData, limit, page);
     setTableList(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, limit, filteredData]);
 
   const handleTabClickEvent = useCallback((name: string) => {
     router.push(`/filter-section/${String(name).toLocaleLowerCase()}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onPageChange = (page) => {
+  const onPageChange = (page: number) => {
     dispatch(handlePageChange(page));
   };
 
@@ -136,3 +147,5 @@ export default function Application() {
     </main>
   );
 }
+
+export default Resources;

@@ -15,10 +15,10 @@ export const getApplicationsList = createAsyncThunk(
 
 export const getApplications = createAsyncThunk(
   'getApplications',
-  async ({name}) => {
+  async ({ name }: { name: string }) => {
     try {
       const response: { data: string[] } = await axiosInstance.get(`/applications/${name}`);
-      return {data: response.data, name};
+      return { data: response.data, name };
     } catch (e) {
       return [];
     }

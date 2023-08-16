@@ -20,11 +20,14 @@ import {
 import { getPaginatedData, getSearchedAndFilteredData } from '@/utils/helperMethods';
 import { getApplications } from '@/store/redux/applications/applicationActions';
 import Pagination from '@/components/Pagination';
+import { IRootState } from '@/store/redux';
+import { AppDispatch } from '@/store';
+import { NextPage } from 'next';
 
-export default function Application() {
+const Application: NextPage = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const {
     applicationList,
     applications,
@@ -33,8 +36,9 @@ export default function Application() {
     page,
     limit,
     tableHeader
-  } = useSelector((state) => state.applications);
-  const { resourceList } = useSelector((state) => state.resources);
+  } = useSelector((state: IRootState) => state.applications);
+  const { resourceList } = useSelector((state: IRootState) => state.resources);
+
   const [search, setSearch] = useState<string>('');
   const [filteredData, setFilteredData] = useState<IRawResponse[]>([]);
   const [tableList, setTableList] = useState<IRawResponse[]>([]);
@@ -42,19 +46,24 @@ export default function Application() {
   const debouncedSearch = debounce(async (search: string) => {
     dispatch(onSearch(search));
   }, 1000);
+
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     debouncedSearch(e.target.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelectApplication = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(handleChangeApplication(e.target.value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if ((!applications || !selectApplication.hasOwnProperty(selectApplication)) && selectApplication) {
+      // @ts-ignore
       dispatch(getApplications({ name: selectApplication }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectApplication]);
 
   useEffect(() => {
@@ -63,24 +72,25 @@ export default function Application() {
         data: applications[selectApplication] ?? [],
         searchValue,
         selectApplication,
-        page,
-        limit
       });
       setFilteredData(filteredData);
       onPageChange(1);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [applications, searchValue, selectApplication]);
 
   useEffect(() => {
     const data = getPaginatedData(filteredData, limit, page);
     setTableList(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, limit, filteredData]);
 
   const handleTabClickEvent = useCallback((name: string) => {
     router.push(`/filter-section/${String(name).toLocaleLowerCase()}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onPageChange = (page) => {
+  const onPageChange = (page: number) => {
     dispatch(handlePageChange(page));
   };
 
@@ -137,3 +147,5 @@ export default function Application() {
     </main>
   );
 }
+
+export default Application;

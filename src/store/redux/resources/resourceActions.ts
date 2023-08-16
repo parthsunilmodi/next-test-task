@@ -15,7 +15,7 @@ export const getResourcesList = createAsyncThunk(
 
 export const getResources = createAsyncThunk(
   'getResources',
-  async ({ name }) => {
+  async ({ name }: { name: string }) => {
     try {
       const response: { data: string[] } = await axiosInstance.get(`/resources/${name}`);
       return { data: response.data, name };

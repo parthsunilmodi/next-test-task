@@ -17,9 +17,12 @@ import THead from '../../components/Table/THead';
 import { getPaginatedData, getSearchedAndFilteredData } from '@/utils/helperMethods';
 import { IRawResponse } from '@/types/raw.type';
 import Pagination from '../../components/Pagination';
+import { IRootState } from '@/store/redux';
+import { AppDispatch } from '@/store';
+import { NextPage } from 'next';
 
-const Core = () => {
-  const dispatch = useDispatch();
+const Core: NextPage = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     searchValue,
     selectApplication,
@@ -28,12 +31,12 @@ const Core = () => {
     tableHeader,
     page,
     limit
-  } = useSelector((state) => state.core);
+  } = useSelector((state: IRootState) => state.core);
   const [search, setSearch] = useState<string>('');
   const [filteredData, setFilteredData] = useState<IRawResponse[]>([]);
   const [tableList, setTableList] = useState<IRawResponse[]>([]);
-  const { applicationList } = useSelector((state) => state.applications);
-  const { resourceList } = useSelector((state) => state.resources);
+  const { applicationList } = useSelector((state: IRootState) => state.applications);
+  const { resourceList } = useSelector((state: IRootState) => state.resources);
 
   const debouncedSearch = debounce((search: string) => {
     dispatch(onSearch(search));
@@ -42,36 +45,38 @@ const Core = () => {
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     debouncedSearch(e.target.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelectApplication = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(handleChangeApplication(e.target.value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelectResource = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(handelChangeResource(e.target.value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!coreData.length) {
       dispatch(getAllCoreData());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-
     (async () => {
       const data = getSearchedAndFilteredData({
         data: coreData,
         searchValue,
         selectApplication,
         selectResource,
-        page,
-        limit
       });
       setFilteredData(data);
       onPageChange(1);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coreData, searchValue, selectApplication, selectResource]);
 
   useEffect(() => {
@@ -79,7 +84,7 @@ const Core = () => {
     setTableList(data);
   }, [page, limit, filteredData]);
 
-  const onPageChange = (page) => {
+  const onPageChange = (page: number) => {
     dispatch(pageChange(page));
   };
 

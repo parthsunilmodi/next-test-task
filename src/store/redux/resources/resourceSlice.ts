@@ -60,8 +60,10 @@ const resourceSlice = createSlice({
     .addCase(getResources.fulfilled, (state: InitialStateProps, action) => {
       state.isLoading = false;
       if (!state.tableHeader.length) {
+        // @ts-ignore
         state.tableHeader = Object.keys(action.payload.data[0]);
       }
+      // @ts-ignore
       state.resources = { ...state.resources, [action.payload.name]: action.payload.data };
     })
     .addCase(getResources.rejected, (state: InitialStateProps) => {

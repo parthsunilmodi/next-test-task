@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getApplications, getApplicationsList } from './applicationActions';
-import { IRawResponse } from '../../../types/raw.type';
+import { IRawResponse } from '@/types/raw.type';
 
 type InitialStateProps = {
   tableHeader: string[],
@@ -60,13 +60,14 @@ const applicationSlice = createSlice({
     .addCase(getApplications.fulfilled, (state: InitialStateProps, action) => {
       state.isLoading = false;
       if (!state.tableHeader.length) {
-        state.tableHeader = Object.keys(action.payload.data[0]);
+        // @ts-ignore
+        state.tableHeader = Object.keys(action.payload?.data[0]);
       }
+      // @ts-ignore
       state.applications = { ...state.applications, [action.payload.name]: action.payload.data };
     })
     .addCase(getApplications.rejected, (state: InitialStateProps) => {
       state.isLoading = false;
-      state.applications = [];
     });
   },
 });

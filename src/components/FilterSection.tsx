@@ -3,11 +3,12 @@ import { useDispatch } from 'react-redux';
 import Dropdown from './Dropdown';
 import { getApplicationsList } from '@/store/redux/applications/applicationActions';
 import { getResourcesList } from '@/store/redux/resources/resourceActions';
+import { AppDispatch } from '@/store';
 
 interface IFilterSection {
   search: string;
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSelectApplication: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleSelectApplication?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   handleSelectResource?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   applicationList?: string[];
   resourceList: string[];
@@ -21,12 +22,13 @@ const FilterSection: React.FC<IFilterSection> = (props) => {
     handleSearchChange,
     applicationList,
     resourceList,
-    handleSelectResource,
-    handleSelectApplication,
+    handleSelectResource = () => { },
+    handleSelectApplication = () => { },
     isCloseApplicationDropDown = true,
     isCloseResourceDropDown = true
   } = props;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
   useEffect(() => {
     if (applicationList && !applicationList?.length) {
       dispatch(getApplicationsList());
@@ -35,7 +37,7 @@ const FilterSection: React.FC<IFilterSection> = (props) => {
     if (resourceList && !resourceList.length) {
       dispatch(getResourcesList());
     }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

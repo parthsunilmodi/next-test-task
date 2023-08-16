@@ -38,7 +38,7 @@ const TdOption: React.FC<ITdOption> = (props) => {
 const TBody: React.FC<ITBody> = (props) => {
   const {tbodyList} = props;
 
-  const renderData = (data) => {
+  const renderData = (data: IRawResponse) => {
     return Object.entries(data).map(([key, value], index) => {
       if (typeof value !== 'object') {
         return (<TdNormal data={value} key={index}/>);

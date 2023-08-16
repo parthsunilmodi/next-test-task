@@ -12,7 +12,7 @@ interface ISearchedAndFilteredData {
 
 interface ISearchData {
   data: IRawResponse[];
-  value: string;
+  search: string;
 }
 
 export const searchData = ({ data, search }: ISearchData) => {
@@ -47,7 +47,6 @@ export const getSearchedAndFilteredData = ({
   }
 
   return filteredData;
-  // return getPaginatedData(filteredData, limit, page * limit);
 };
 
 // function to return the paginated data

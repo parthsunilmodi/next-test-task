@@ -2,7 +2,7 @@
 import React from 'react';
 
 interface ITHead {
-  theadList: [];
+  theadList: string[];
 }
 
 const THead: React.FC<ITHead> = (props) => {

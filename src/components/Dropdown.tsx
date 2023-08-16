@@ -5,8 +5,8 @@ import select = Simulate.select;
 interface IDropdown {
   data: string[];
   placeholder: string;
-  defaultValue: string;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  defaultValue?: string;
+  handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 const Dropdown: React.FC<IDropdown> = (props) => {
